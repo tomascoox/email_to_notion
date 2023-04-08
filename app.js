@@ -45,7 +45,7 @@ async function addEmailToNotionDatabase(email, content) {
             },
         }
 
-        const response = await notion.pages.create({
+        const createdPage = await notion.pages.create({
             parent: { database_id: process.env.NOTION_DATABASE_ID },
             properties,
             children: blocks,
