@@ -16,17 +16,6 @@ app.use(urlencodedParser({ extended: true }))
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY })
 
-module.exports = async (req, res) => {
-    const email = {
-        from: req.body.from,
-        subject: req.body.subject,
-        content: req.body['stripped-html'],
-    }
-
-    await addEmailToNotionDatabase(email, email.content)
-    res.sendStatus(200)
-})
-
 // app.post('/webhook', async (req, res) => {
 //     const email = {
 //         from: req.body.from,
