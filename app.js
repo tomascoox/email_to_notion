@@ -44,29 +44,31 @@ async function addEmailToNotionDatabase(email, content) {
 
         const markdown = turndownService.turndown(content)
 
-        // const blocks = markdownToBlocks(markdown)
+        console.log(markdown);
 
-        const blocks = markdownToBlocks(markdown, {
-            link: (href, title, text) => {
-                const sanitizedHref = sanitizeUrl(href)
-                if (sanitizedHref) {
-                    return {
-                        object: 'block',
-                        type: 'embed',
-                        embed: {
-                            url: sanitizedHref,
-                        },
-                    }
-                }
-                return {
-                    object: 'block',
-                    type: 'paragraph',
-                    paragraph: {
-                        text: [{ type: 'text', text: { content: text } }],
-                    },
-                }
-            },
-        })
+        const blocks = markdownToBlocks(markdown)
+
+        // const blocks = markdownToBlocks(markdown, {
+        //     link: (href, title, text) => {
+        //         const sanitizedHref = sanitizeUrl(href)
+        //         if (sanitizedHref) {
+        //             return {
+        //                 object: 'block',
+        //                 type: 'embed',
+        //                 embed: {
+        //                     url: sanitizedHref,
+        //                 },
+        //             }
+        //         }
+        //         return {
+        //             object: 'block',
+        //             type: 'paragraph',
+        //             paragraph: {
+        //                 text: [{ type: 'text', text: { content: text } }],
+        //             },
+        //         }
+        //     },
+        // })
 
         const properties = {
             Titel: {
