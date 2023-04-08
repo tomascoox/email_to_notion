@@ -36,6 +36,11 @@ app.listen(PORT, () => {
 async function addEmailToNotionDatabase(email, content) {
     try {
 
+        if (typeof content !== 'string') {
+            console.warn('Invalid content received, skipping Turndown processing');
+            content = '';
+        }
+
         const markdown = turndownService.turndown(content)
 
         const blocks = markdownToBlocks(markdown);
