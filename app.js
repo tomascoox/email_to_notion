@@ -3,6 +3,7 @@ import bodyParser from 'body-parser'
 const { json: jsonParser, urlencoded: urlencodedParser } = bodyParser
 import { config as dotenvConfig } from 'dotenv'
 import { Client } from '@notionhq/client'
+
 import { markdownToBlocks } from '@tryfabric/martian';
 
 import TurndownService from 'turndown'
@@ -16,21 +17,21 @@ app.use(urlencodedParser({ extended: true }))
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY })
 
-// app.post('/webhook', async (req, res) => {
-//     const email = {
-//         from: req.body.from,
-//         subject: req.body.subject,
-//         content: req.body['stripped-html'],
-//     }
+app.post('/webhook', async (req, res) => {
+    const email = {
+        from: req.body.from,
+        subject: req.body.subject,
+        content: req.body['stripped-html'],
+    }
 
-//     await addEmailToNotionDatabase(email, email.content)
-//     res.sendStatus(200)
-// })
+    await addEmailToNotionDatabase(email, email.content)
+    res.sendStatus(200)
+})
 
-// const PORT = process.env.PORT || 3000
-// app.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`)
-// })
+const PORT = process.env.PORT || 3000
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`)
+})
 
 async function addEmailToNotionDatabase(email, content) {
     try {
