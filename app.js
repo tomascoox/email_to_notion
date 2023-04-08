@@ -12,8 +12,8 @@ const turndownService = new TurndownService()
 dotenvConfig()
 
 const app = express()
-app.use(jsonParser())
-app.use(urlencodedParser({ extended: true }))
+app.use(bodyParser.json({ limit: '5mb' })); // Increase JSON payload limit
+app.use(bodyParser.urlencoded({ limit: '5mb', extended: true })); // Increase URL-encoded payload limit
 
 const notion = new Client({ auth: process.env.NOTION_API_KEY })
 
