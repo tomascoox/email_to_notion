@@ -4,7 +4,7 @@ const { json: jsonParser, urlencoded: urlencodedParser } = bodyParser
 import { config as dotenvConfig } from 'dotenv'
 import { Client } from '@notionhq/client'
 
-import { markdownToBlocks } from '@tryfabric/martian';
+import { markdownToBlocks } from '@tryfabric/martian'
 
 import TurndownService from 'turndown'
 const turndownService = new TurndownService()
@@ -35,15 +35,36 @@ app.listen(PORT, () => {
 
 async function addEmailToNotionDatabase(email, content) {
     try {
-
         if (typeof content !== 'string') {
-            console.warn('Invalid content received, skipping Turndown processing');
-            content = '';
+            console.warn('Invalid content received, skipping Turndown processing')
+            content = ''
         }
 
         const markdown = turndownService.turndown(content)
 
-        const blocks = markdownToBlocks(markdown);
+        // const blocks = markdownToBlocks(markdown)
+
+        const blocks = markdownToBlocks(markdown, {
+            link: (href, title, text) => {
+                const sanitizedHref = sanitizeUrl(href)
+                if (sanitizedHref) {
+                    return {
+                        object: 'block',
+                        type: 'embed',
+                        embed: {
+                            url: sanitizedHref,
+                        },
+                    }
+                }
+                return {
+                    object: 'block',
+                    type: 'paragraph',
+                    paragraph: {
+                        text: [{ type: 'text', text: { content: text } }],
+                    },
+                }
+            },
+        })
 
         const properties = {
             Titel: {
@@ -60,5 +81,15 @@ async function addEmailToNotionDatabase(email, content) {
         console.log(`Successfully added email to Notion: ${createdPage.id}`)
     } catch (error) {
         console.error('Error adding email to Notion:', error)
+    }
+}
+
+function sanitizeUrl(urlString) {
+    try {
+        const url = new URL(urlString)
+        return url.toString()
+    } catch (error) {
+        console.warn('Invalid URL detected:', urlString)
+        return ''
     }
 }
